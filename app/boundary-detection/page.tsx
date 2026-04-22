@@ -1,5 +1,5 @@
 'use client'
-const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || "https://agri-backend-v8ch.onrender.com"
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { DashboardLayout } from '@/components/dashboard/layout'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
