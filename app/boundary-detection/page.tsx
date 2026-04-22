@@ -1,5 +1,5 @@
 'use client'
-
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { DashboardLayout } from '@/components/dashboard/layout'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -34,20 +34,20 @@ interface DetectionResponse {
 
 // Common drone camera presets [label, altitude_m, hfov_deg]
 const DRONE_PRESETS: [string, number, number][] = [
-  ['DJI Phantom 4 @ 50m',  50,  84],
+  ['DJI Phantom 4 @ 50m', 50, 84],
   ['DJI Phantom 4 @ 100m', 100, 84],
-  ['DJI Mini 3 @ 50m',     50,  82],
-  ['DJI Mini 3 @ 100m',    100, 82],
-  ['DJI Mavic 3 @ 100m',   100, 84],
-  ['DJI Mavic 3 @ 150m',   150, 84],
-  ['Generic Drone @ 80m',   80,  75],
-  ['Custom…',               0,   0],
+  ['DJI Mini 3 @ 50m', 50, 82],
+  ['DJI Mini 3 @ 100m', 100, 82],
+  ['DJI Mavic 3 @ 100m', 100, 84],
+  ['DJI Mavic 3 @ 150m', 150, 84],
+  ['Generic Drone @ 80m', 80, 75],
+  ['Custom…', 0, 0],
 ]
 
 const ACCURACY_INFO: Record<string, { label: string; color: string; hint: string }> = {
-  gps_exif:      { label: 'GPS EXIF', color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30', hint: 'Altitude read from image EXIF — high accuracy' },
+  gps_exif: { label: 'GPS EXIF', color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30', hint: 'Altitude read from image EXIF — high accuracy' },
   user_altitude: { label: 'User Input', color: 'text-primary bg-primary/10 border-primary/30', hint: 'Altitude provided by user — high accuracy' },
-  estimated:     { label: 'Estimated', color: 'text-amber-400 bg-amber-400/10 border-amber-400/30', hint: 'Using default 100 m altitude — set drone altitude for better accuracy' },
+  estimated: { label: 'Estimated', color: 'text-amber-400 bg-amber-400/10 border-amber-400/30', hint: 'Using default 100 m altitude — set drone altitude for better accuracy' },
 }
 
 type InputMode = 'upload' | 'webcam' | 'ipcam'
@@ -73,8 +73,8 @@ export default function BoundaryDetectionPage() {
 
   // Webcam state
   const [webcamActive, setWebcamActive] = useState(false)
-  const videoRef   = useRef<HTMLVideoElement>(null)
-  const canvasRef  = useRef<HTMLCanvasElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // IP-cam state
@@ -82,9 +82,9 @@ export default function BoundaryDetectionPage() {
   const [ipcamConnected, setIpcamConnected] = useState(false)
   const [ipcamStreaming, setIpcamStreaming] = useState(false)   // continuous auto-capture
   const [ipcamInterval, setIpcamInterval] = useState<number>(5)  // seconds between captures
-  const ipcamAutoRef   = useRef<ReturnType<typeof setInterval> | null>(null)
-  const ipcamVideoRef  = useRef<HTMLVideoElement>(null)
-  const ipcamImgRef    = useRef<HTMLImageElement>(null)
+  const ipcamAutoRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const ipcamVideoRef = useRef<HTMLVideoElement>(null)
+  const ipcamImgRef = useRef<HTMLImageElement>(null)
   const ipcamCanvasRef = useRef<HTMLCanvasElement>(null)
 
   const isCustom = presetIdx === DRONE_PRESETS.length - 1
@@ -160,7 +160,7 @@ export default function BoundaryDetectionPage() {
     const base64Data = img.split(',')[1]
 
     try {
-      const res = await fetch('http://localhost:8002/detect-fields', {
+      const res = await fetch(`${BACKEND}/detect-fields`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -195,7 +195,7 @@ export default function BoundaryDetectionPage() {
 
     // Attempt 1: ask the backend to grab a frame (works for RTSP, MJPEG, etc.)
     try {
-      const res = await fetch('http://localhost:8002/ipcam-snapshot', {
+      const res = await fetch(`${BACKEND}/ipcam-snapshot`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: ipcamUrl }),
@@ -207,14 +207,14 @@ export default function BoundaryDetectionPage() {
           return `data:image/jpeg;base64,${json.frame_base64}`
         }
       }
-    } catch {/* fall through */}
+    } catch {/* fall through */ }
 
     // Attempt 2: draw the <img> or <video> element on a canvas (MJPEG in browser)
     const canvas = ipcamCanvasRef.current
     if (!canvas) return null
 
     if (ipcamImgRef.current && ipcamImgRef.current.naturalWidth > 0) {
-      canvas.width  = ipcamImgRef.current.naturalWidth
+      canvas.width = ipcamImgRef.current.naturalWidth
       canvas.height = ipcamImgRef.current.naturalHeight
       const ctx = canvas.getContext('2d')!
       ctx.drawImage(ipcamImgRef.current, 0, 0)
@@ -222,7 +222,7 @@ export default function BoundaryDetectionPage() {
     }
 
     if (ipcamVideoRef.current && ipcamVideoRef.current.readyState >= 2) {
-      canvas.width  = ipcamVideoRef.current.videoWidth
+      canvas.width = ipcamVideoRef.current.videoWidth
       canvas.height = ipcamVideoRef.current.videoHeight
       const ctx = canvas.getContext('2d')!
       ctx.drawImage(ipcamVideoRef.current, 0, 0)
@@ -703,7 +703,7 @@ export default function BoundaryDetectionPage() {
                     {[
                       { icon: Upload, label: 'Upload Image' },
                       { icon: Camera, label: 'Webcam Feed' },
-                      { icon: Wifi,   label: 'IP / RTSP Cam' },
+                      { icon: Wifi, label: 'IP / RTSP Cam' },
                     ].map(({ icon: Icon, label }) => (
                       <div key={label} className="flex flex-col items-center gap-2 p-3 rounded-xl border border-white/5 bg-white/2 text-xs text-muted-foreground">
                         <Icon className="h-5 w-5 opacity-50" />

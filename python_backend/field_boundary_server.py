@@ -9,7 +9,9 @@ Priority chain:
 Run with:
     uvicorn field_boundary_server:app --host 0.0.0.0 --port 8002 --reload
 """
+from fastapi import APIRouter
 
+router = APIRouter()
 import base64
 import json
 import os
@@ -1022,7 +1024,7 @@ def kmeans_fallback(frame_bgr: np.ndarray, gsd: float = 0.125) -> tuple[list[Plo
 # ---------------------------------------------------------------------------
 # IP Camera Snapshot Endpoint
 # ---------------------------------------------------------------------------
-@app.post("/ipcam-snapshot", response_model=IpcamSnapshotResponse)
+@router.post("/ipcam-snapshot", response_model=IpcamSnapshotResponse)
 def ipcam_snapshot(req: IpcamSnapshotRequest):
     """
     Grab a single JPEG frame from any IP camera URL using OpenCV.
@@ -1104,7 +1106,7 @@ def ipcam_snapshot(req: IpcamSnapshotRequest):
     return IpcamSnapshotResponse(frame_base64=b64, width=w, height=h, source_url=url)
 
 
-@app.get("/health")
+@router.get("/health")
 def health():
     return {
         "status": "ok",
@@ -1120,7 +1122,7 @@ def health():
     }
 
 
-@app.post("/detect-fields", response_model=FieldBoundaryResponse)
+@router.post("/detect-fields", response_model=FieldBoundaryResponse)
 def detect_fields(req: FieldBoundaryRequest):
     t0 = time.time()
 

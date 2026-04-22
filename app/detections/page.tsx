@@ -35,18 +35,18 @@ import { useState } from 'react'
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 const severityConfig = {
-  low:      { label: 'Low',      color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
-  medium:   { label: 'Medium',   color: 'bg-amber-500/10 text-amber-600 border-amber-500/20' },
-  high:     { label: 'High',     color: 'bg-orange-500/10 text-orange-600 border-orange-500/20' },
+  low: { label: 'Low', color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
+  medium: { label: 'Medium', color: 'bg-amber-500/10 text-amber-600 border-amber-500/20' },
+  high: { label: 'High', color: 'bg-orange-500/10 text-orange-600 border-orange-500/20' },
   critical: { label: 'Critical', color: 'bg-destructive/10 text-destructive border-destructive/20' },
 }
 
 const statusConfig = {
-  detected:      { label: 'Detected',      color: 'bg-blue-500 text-white' },
-  confirmed:     { label: 'Confirmed',     color: 'bg-amber-500 text-white' },
-  treated:       { label: 'Treated',       color: 'bg-primary text-primary-foreground' },
-  resolved:      { label: 'Resolved',      color: 'bg-emerald-500 text-white' },
-  false_positive:{ label: 'False Positive',color: 'bg-muted text-muted-foreground' },
+  detected: { label: 'Detected', color: 'bg-blue-500 text-white' },
+  confirmed: { label: 'Confirmed', color: 'bg-amber-500 text-white' },
+  treated: { label: 'Treated', color: 'bg-primary text-primary-foreground' },
+  resolved: { label: 'Resolved', color: 'bg-emerald-500 text-white' },
+  false_positive: { label: 'False Positive', color: 'bg-muted text-muted-foreground' },
 }
 
 function getCategoryIcon(diseaseName: string) {
@@ -70,21 +70,21 @@ export default function DetectionsPage() {
   const [severityFilter, setSeverityFilter] = useState<string>('all')
   const [statusFilter, setStatusFilter] = useState<string>('all')
 
-  const { data: detections, isLoading, mutate } = useSWR<PlantDetection[]>('/api/detections', fetcher, {
+  const { data: detections, isLoading, mutate } = useSWR<PlantDetection[]>(`${process.env.NEXT_PUBLIC_BACKEND_URL}/detect`, fetcher, {
     refreshInterval: 30000,
   })
 
   const stats = Array.isArray(detections)
     ? {
-        total:    detections.length,
-        active:   detections.filter((d) => d.status !== 'resolved' && d.status !== 'false_positive').length,
-        critical: detections.filter((d) => d.severity === 'critical' || d.severity === 'high').length,
-        resolved: detections.filter((d) => d.status === 'resolved').length,
-      }
+      total: detections.length,
+      active: detections.filter((d) => d.status !== 'resolved' && d.status !== 'false_positive').length,
+      critical: detections.filter((d) => d.severity === 'critical' || d.severity === 'high').length,
+      resolved: detections.filter((d) => d.status === 'resolved').length,
+    }
     : null
 
   const handleStatusChange = async (id: number, newStatus: string) => {
-    await fetch('/api/detections', {
+    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/detect`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, status: newStatus }),
@@ -100,9 +100,9 @@ export default function DetectionsPage() {
 
   const DetectionCard = ({ detection }: { detection: PlantDetection }) => {
     const severity = severityConfig[detection.severity as keyof typeof severityConfig] ?? severityConfig.low
-    const status   = statusConfig[detection.status   as keyof typeof statusConfig]   ?? statusConfig.detected
-    const catInfo  = getCategoryIcon(detection.disease_name)
-    const CatIcon  = catInfo.icon
+    const status = statusConfig[detection.status as keyof typeof statusConfig] ?? statusConfig.detected
+    const catInfo = getCategoryIcon(detection.disease_name)
+    const CatIcon = catInfo.icon
     const isHealthy = detection.disease_name === 'Healthy'
 
     return (
@@ -125,21 +125,21 @@ export default function DetectionsPage() {
                   <Badge className={cn("rounded-md font-bold px-2 py-0 border-0", status.color)}>{status.label}</Badge>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                   <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
-                      <ShieldAlert className="h-3 w-3" />
-                      {(detection.confidence * 100).toFixed(0)}% Confidence
-                   </div>
-                   <span>•</span>
-                   <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {formatDistanceToNow(new Date(detection.detection_time), { addSuffix: true })}
-                   </span>
+                  <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                    <ShieldAlert className="h-3 w-3" />
+                    {(detection.confidence * 100).toFixed(0)}% Confidence
+                  </div>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {formatDistanceToNow(new Date(detection.detection_time), { addSuffix: true })}
+                  </span>
                 </div>
               </div>
             </div>
-            
+
             <div className="flex flex-col items-end gap-2 text-right">
-               <Badge variant="outline" className={cn("font-bold tracking-widest uppercase text-[10px] py-1 px-3", severity.color)}>
+              <Badge variant="outline" className={cn("font-bold tracking-widest uppercase text-[10px] py-1 px-3", severity.color)}>
                 {severity.label} Severity
               </Badge>
               {detection.lat && detection.lng && (
@@ -153,7 +153,7 @@ export default function DetectionsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-3">
-               {!isHealthy && (
+              {!isHealthy && (
                 <div className="flex flex-wrap gap-2">
                   <span className={cn('flex items-center gap-2 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-bold', catInfo.color)}>
                     <CatIcon className="h-4 w-4" />
@@ -165,7 +165,7 @@ export default function DetectionsPage() {
                   </span> */}
                 </div>
               )}
-              
+
               {detection.recommendations && (
                 <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 relative overflow-hidden group/rec">
                   <div className="absolute top-0 right-0 p-2 opacity-10 group-hover/rec:opacity-20 transition-opacity">
@@ -320,7 +320,7 @@ export default function DetectionsPage() {
             <Card className="bg-white/5 border-white/5 border-dashed border-2 rounded-3xl">
               <CardContent className="flex flex-col items-center justify-center py-20">
                 <div className="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center mb-6 border border-white/10">
-                   <Sprout className="h-8 w-8 text-primary/40" />
+                  <Sprout className="h-8 w-8 text-primary/40" />
                 </div>
                 <h3 className="font-bold text-xl tracking-tight mb-2">No Detections Found</h3>
                 <p className="text-muted-foreground text-center max-w-xs px-6">

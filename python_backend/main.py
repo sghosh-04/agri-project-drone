@@ -1,12 +1,8 @@
 from fastapi import FastAPI
-from detection_server import app as detection_app
-from field_boundary_server import app as boundary_app
+from detection_server import router as detection_router
+from field_boundary_server import router as boundary_router
 
-app = FastAPI()
+app = FastAPI(title="Agri Drone Backend")
 
-# Merge routes from both apps
-for route in detection_app.routes:
-    app.router.routes.append(route)
-
-for route in boundary_app.routes:
-    app.router.routes.append(route)
+app.include_router(detection_router)
+app.include_router(boundary_router)

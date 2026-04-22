@@ -21,7 +21,9 @@ Required model files:
     - best_leaf_only.pt   (YOLO crop/plant detector — detects any plant part)
     - plant_cnn_model.pt  (PlantDiseaseCNN — 38 disease classes)
 """
+from fastapi import APIRouter
 
+router = APIRouter()
 import os
 import sys
 import warnings
@@ -754,7 +756,7 @@ def process_frame(frame: np.ndarray) -> list[LeafResult]:
 # ---------------------------------------------------------------------------
 # API Endpoints
 # ---------------------------------------------------------------------------
-@app.get("/health")
+@router.get("/health")
 def health():
     return {
         "status": "ok",
@@ -769,7 +771,7 @@ def health():
     }
 
 
-@app.post("/detect", response_model=DetectResponse)
+@router.post("/detect", response_model=DetectResponse)
 def detect(req: DetectRequest):
     t0 = time.time()
 
@@ -788,14 +790,14 @@ def detect(req: DetectRequest):
     )
 
 
-@app.get("/disease-info/{label}")
+@router.get("/disease-info/{label}")
 def disease_info(label: str):
     """Return treatment & metadata for a specific disease label."""
     info = get_disease_info(label)
     return {"label": label, **info}
 
 
-@app.get("/classes")
+@router.get("/classes")
 def get_classes():
     return {"total": len(CLASS_NAMES), "classes": CLASS_NAMES}
 
