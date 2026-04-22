@@ -4,5 +4,9 @@ from field_boundary_server import app as boundary_app
 
 app = FastAPI()
 
-app.mount("/detect", detection_app)
-app.mount("/boundary", boundary_app)
+# Merge routes from both apps
+for route in detection_app.routes:
+    app.router.routes.append(route)
+
+for route in boundary_app.routes:
+    app.router.routes.append(route)
