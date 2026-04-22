@@ -1,0 +1,259 @@
+Activating virtual environment from /plant/.venv
+Installing / verifying Python requirements...
+
+[notice] A new release of pip is available: 25.3 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+
+============================================
+  Plant Disease Detection Server
+  http://localhost:8001
+  Docs → http://localhost:8001/docs
+============================================
+
+INFO:     Will watch for changes in these directories: ['/Users/satwikmukherjee/Desktop/agri project/python_backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [30633] using WatchFiles
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [30637]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:59099 - "OPTIONS /detect-fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59099 - "POST /detect-fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59101 - "POST /detect-fields HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'detection_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [30637]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [31341]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [31341]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [31354]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:59757 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59757 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59772 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59790 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59811 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59828 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59835 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60798 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60798 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60804 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60828 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60828 - "POST /detect HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60838 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60842 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60850 - "POST /detect HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60850 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60890 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60890 - "GET /health HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [31354]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [44447]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [44447]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [45120]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [45120]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [45514]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [45514]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [45816]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [45816]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [46240]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46240]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [46256]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46256]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [46757]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46757]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [46776]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46776]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [49781]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [49781]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [50580]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [50580]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [50603]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [50603]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [51043]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51043]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [51195]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51195]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [51570]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51570]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [51577]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51577]
+INFO:detection_server:Using Apple MPS GPU 🚀
+INFO:detection_server:Loading YOLO from: /Users/satwikmukherjee/Desktop/plant/best_leaf_only.pt
+INFO:detection_server:Loading CNN  from: /Users/satwikmukherjee/Desktop/plant/plant_cnn_model.pt
+INFO:detection_server:Models loaded successfully ✅
+INFO:     Started server process [51911]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

@@ -1,0 +1,195 @@
+INFO:     Will watch for changes in these directories: ['/Users/satwikmukherjee/Desktop/agri project/python_backend']
+INFO:     Uvicorn running on http://0.0.0.0:8002 (Press CTRL+C to quit)
+INFO:     Started reloader process [50901] using WatchFiles
+INFO:     Started server process [50904]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:62965 - "GET /health HTTP/1.1" 200 OK
+WARNING:field_boundary_server:Gemini unavailable (Gemini HTTP 404: {
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
+) — using K-Means fallback
+INFO:     127.0.0.1:63001 - "POST /detect-fields HTTP/1.1" 200 OK
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [50904]
+INFO:     Started server process [51042]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:field_boundary_server:Gemini API error
+Traceback (most recent call last):
+  File "/Users/satwikmukherjee/Desktop/agri project/python_backend/field_boundary_server.py", line 150, in call_gemini
+    with urllib.request.urlopen(req, timeout=60) as resp:
+  File "/Users/satwikmukherjee/.pyenv/versions/3.10.12/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/Users/satwikmukherjee/.pyenv/versions/3.10.12/lib/python3.10/urllib/request.py", line 525, in open
+    response = meth(req, response)
+  File "/Users/satwikmukherjee/.pyenv/versions/3.10.12/lib/python3.10/urllib/request.py", line 634, in http_response
+    response = self.parent.error(
+  File "/Users/satwikmukherjee/.pyenv/versions/3.10.12/lib/python3.10/urllib/request.py", line 563, in error
+    return self._call_chain(*args)
+  File "/Users/satwikmukherjee/.pyenv/versions/3.10.12/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/Users/satwikmukherjee/.pyenv/versions/3.10.12/lib/python3.10/urllib/request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/satwikmukherjee/Desktop/agri project/python_backend/field_boundary_server.py", line 306, in detect_fields
+    gemini_plots = call_gemini(image_b64_clean)
+  File "/Users/satwikmukherjee/Desktop/agri project/python_backend/field_boundary_server.py", line 159, in call_gemini
+    raise RuntimeError(f"Gemini HTTP {e.code}: {e.read().decode()[:300]}")
+RuntimeError: Gemini HTTP 404: {
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
+
+INFO:     127.0.0.1:63093 - "POST /detect-fields HTTP/1.1" 500 Internal Server Error
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51042]
+INFO:     Started server process [51194]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51194]
+INFO:     Started server process [51569]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51569]
+INFO:     Started server process [51576]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:63169 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63188 - "OPTIONS /detect-fields HTTP/1.1" 200 OK
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 20s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 40s
+WARNING:field_boundary_server:gemini-2.0-flash HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) response: ```json
+{"plots":[{"id":1,"bbox":[0,0,490,500],"crop_type":"rice","confidence":0.95},{"id":2,"bbox":[490,0,800,250],"crop_type":"rice","confidence":0.95},{"id":3,"bbox":[0,500,400,800],"crop_type":"ri
+WARNING:field_boundary_server:Error with gemini-2.5-flash: Unterminated string starting at: line 1 column 320 (char 319)
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash-lite, retrying in 20s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash-lite, retrying in 40s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 20s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 40s
+WARNING:field_boundary_server:gemini-2.0-flash-lite HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+ERROR:field_boundary_server:Gemini API error
+Traceback (most recent call last):
+  File "/Users/satwikmukherjee/Desktop/agri project/python_backend/field_boundary_server.py", line 334, in detect_fields
+    gemini_plots, model_used = call_gemini(image_b64_clean)
+  File "/Users/satwikmukherjee/Desktop/agri project/python_backend/field_boundary_server.py", line 192, in call_gemini
+    raise RuntimeError(f"All Gemini models failed. Last error: {last_error}")
+RuntimeError: All Gemini models failed. Last error: gemini-2.0-flash-lite HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+INFO:     127.0.0.1:63188 - "POST /detect-fields HTTP/1.1" 500 Internal Server Error
+WARNING:field_boundary_server:gemini-2.0-flash HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+WARNING:  WatchFiles detected changes in 'field_boundary_server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for connections to close. (CTRL+C to force quit)
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) response: ```json
+{"plots": [
+  {"id": 1, "bbox": [0, 0, 200, 300], "crop_type": "grass", "confidence": 0.8},
+  {"id": 2, "bbox": [0, 300, 200, 800], "crop_type": "grass", "confidence": 0.8},
+  {"id": 3, "bbox"
+WARNING:field_boundary_server:Error with gemini-2.5-flash: Expecting ',' delimiter: line 5 column 29 (char 290)
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash-lite, retrying in 20s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash-lite, retrying in 40s
+WARNING:field_boundary_server:gemini-2.0-flash-lite HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+ERROR:field_boundary_server:Gemini API error
+Traceback (most recent call last):
+  File "/Users/satwikmukherjee/Desktop/agri project/python_backend/field_boundary_server.py", line 334, in detect_fields
+  File "/Users/satwikmukherjee/Desktop/agri project/python_backend/field_boundary_server.py", line 192, in call_gemini
+    err_body = e.read().decode()[:200]
+RuntimeError: All Gemini models failed. Last error: gemini-2.0-flash-lite HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+INFO:     127.0.0.1:63271 - "POST /detect-fields HTTP/1.1" 500 Internal Server Error
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [51576]
+INFO:     Started server process [51959]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 20s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 40s
+WARNING:field_boundary_server:gemini-2.0-flash HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) response: ```json
+{"plots": [
+  {"id": 1, "bbox": [0, 0, 200, 250], "crop_type": "wheat", "confidence": 0.85},
+  {"id": 2, "bbox": [0, 250, 200, 450], "crop_type": "grass", "confidence": 0.85},
+  {"id": 3, "bbox": [0, 450, 200, 650], "crop_type": "wheat", "confidence": 0.85},
+  {"id": 4, "bbox": [0, 650, 200,
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) detected 6 plots
+INFO:     127.0.0.1:63405 - "POST /detect-fields HTTP/1.1" 200 OK
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 20s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 40s
+WARNING:field_boundary_server:gemini-2.0-flash HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) response: ```json
+{"plots":[{"id":1,"bbox":[0,0,390,390],"crop_type":"rice","confidence":0.95},{"id":2,"bbox":[340,0,800,350],"crop_type":"rice","confidence":0.95},{"id":3,"bbox":[0,350,340,800],"crop_type":"rice","confidence":0.95},{"id":4,"bbox":[300,300,700,700],"crop_type":"rice","confidence":0.95},{"id":
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) detected 7 plots
+INFO:     127.0.0.1:63499 - "POST /detect-fields HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63595 - "OPTIONS /detect-fields HTTP/1.1" 200 OK
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 20s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 40s
+WARNING:field_boundary_server:gemini-2.0-flash HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) response: {"plots":[{"id":1,"bbox":[0,0,160,110],"crop_type":"rice","confidence":0.95},{"id":2,"bbox":[650,0,800,80],"crop_type":"rice","confidence":0.95},{"id":3,"bbox":[0,110,180,200],"crop_type":"rice","confidence":0.95},{"id":4,"bbox":[650,80,800,180],"crop_type":"rice","confidence":0.95},{"id":5,"bbox":[
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) detected 26 plots
+INFO:     127.0.0.1:63595 - "POST /detect-fields HTTP/1.1" 200 OK
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 20s
+WARNING:field_boundary_server:Rate limited on gemini-2.0-flash, retrying in 40s
+WARNING:field_boundary_server:gemini-2.0-flash HTTP 429: {
+  "error": {
+    "code": 429,
+    "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) response: ```json
+{"plots":[
+  {"id":1,"bbox":[0,0,190,150],"crop_type":"rice","confidence":0.9},
+  {"id":2,"bbox":[190,0,390,150],"crop_type":"rice","confidence":0.9},
+  {"id":3,"bbox":[0,150,190,250],"crop_type":"rice","confidence":0.85},
+  {"id":4,"bbox":[190,150,390,250],"crop_type":"rice","confidence":0.
+INFO:field_boundary_server:Gemini (gemini-2.5-flash) detected 8 plots
+INFO:     127.0.0.1:63713 - "POST /detect-fields HTTP/1.1" 200 OK
