@@ -1,4 +1,6 @@
 'use client'
+const BACKEND_URL = "https://agri-backend-v8ch.onrender.com"
+
 
 import { DashboardLayout } from '@/components/dashboard/layout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -143,10 +145,10 @@ const statusConfig = {
 }
 
 const severityConfig: Record<string, { label: string; color: string }> = {
-  none:     { label: 'None',     color: 'bg-emerald-100/10 text-emerald-500 border-emerald-500/20' },
-  low:      { label: 'Low',      color: 'bg-yellow-100/10 text-yellow-500 border-yellow-500/20' },
-  medium:   { label: 'Medium',   color: 'bg-orange-100/10 text-orange-500 border-orange-500/20' },
-  high:     { label: 'High',     color: 'bg-red-100/10 text-red-500 border-red-500/20' },
+  none: { label: 'None', color: 'bg-emerald-100/10 text-emerald-500 border-emerald-500/20' },
+  low: { label: 'Low', color: 'bg-yellow-100/10 text-yellow-500 border-yellow-500/20' },
+  medium: { label: 'Medium', color: 'bg-orange-100/10 text-orange-500 border-orange-500/20' },
+  high: { label: 'High', color: 'bg-red-100/10 text-red-500 border-red-500/20' },
   critical: { label: 'Critical', color: 'bg-red-600/20 text-red-600 border-red-600/40 font-bold' },
 }
 
@@ -192,7 +194,7 @@ export default function LiveDetectionPage() {
   const checkBackend = useCallback(async () => {
     setStatusLoading(true)
     try {
-      const res = await fetch('/api/plant-detect')
+      const res = await fetch(`${BACKEND_URL}/health`)
       const data: BackendStatus = await res.json()
       setBackendStatus(data)
     } catch {
@@ -266,7 +268,9 @@ export default function LiveDetectionPage() {
       const isBoundary = boundaryModeRef.current
 
       try {
-        const endpoint = isBoundary ? '/api/field-detect' : '/api/plant-detect'
+        const endpoint = isBoundary
+          ? `${BACKEND_URL}/detect-fields`
+          : `${BACKEND_URL}/detect`
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -275,13 +279,22 @@ export default function LiveDetectionPage() {
             save_to_db: !isBoundary, // only save disease detections for now
           }),
         })
-        const data = await res.json()
+        const text = await res.text()
+
+        let data
+        try {
+          data = JSON.parse(text)
+        } catch (e) {
+          console.error("❌ Backend returned HTML:", text)
+          setError("Backend returned invalid response")
+          return
+        }
 
         if (data.error) {
           if (data.error === 'NO_FIELD') {
-             setError("Target feed does not contain agricultural field layout. Awaiting valid drone target...")
+            setError("Target feed does not contain agricultural field layout. Awaiting valid drone target...")
           } else {
-             setError(`${data.error}${data.detail ? ' — ' + data.detail : ''}`)
+            setError(`${data.error}${data.detail ? ' — ' + data.detail : ''}`)
           }
           setResult(null)
           setBoundaryResult(null)
@@ -301,7 +314,7 @@ export default function LiveDetectionPage() {
         }
       } catch (err) {
         console.error('Detection error:', err)
-        setError('Network error. Is the Next.js server running?')
+        setError('Backend error. Check API connection or logs.')
       } finally {
         setDetecting(false)
       }
@@ -367,29 +380,29 @@ export default function LiveDetectionPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-             <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "rounded-xl border transition-all h-9 px-4 font-black text-[10px] tracking-widest uppercase",
-                  boundaryMode ? "bg-primary text-black border-primary/20" : "bg-white/5 border-white/5 text-muted-foreground"
-                )}
-                onClick={() => {
-                  setBoundaryMode(!boundaryMode)
-                  setResult(null)
-                  setBoundaryResult(null)
-                }}
-             >
-                <Layers className="h-3.5 w-3.5 mr-2" />
-                Boundary Mode {boundaryMode ? 'ON' : 'OFF'}
-             </Button>
-             <Button variant="ghost" size="sm" className="rounded-xl border border-white/5 bg-white/5 h-9" onClick={checkBackend}>
-                <RefreshCw className={cn('h-4 w-4 mr-2', statusLoading && 'animate-spin')} />
-                Re-sync
-             </Button>
-             <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                Alpha Channel Restricted
-             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "rounded-xl border transition-all h-9 px-4 font-black text-[10px] tracking-widest uppercase",
+                boundaryMode ? "bg-primary text-black border-primary/20" : "bg-white/5 border-white/5 text-muted-foreground"
+              )}
+              onClick={() => {
+                setBoundaryMode(!boundaryMode)
+                setResult(null)
+                setBoundaryResult(null)
+              }}
+            >
+              <Layers className="h-3.5 w-3.5 mr-2" />
+              Boundary Mode {boundaryMode ? 'ON' : 'OFF'}
+            </Button>
+            <Button variant="ghost" size="sm" className="rounded-xl border border-white/5 bg-white/5 h-9" onClick={checkBackend}>
+              <RefreshCw className={cn('h-4 w-4 mr-2', statusLoading && 'animate-spin')} />
+              Re-sync
+            </Button>
+            <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+              Alpha Channel Restricted
+            </div>
           </div>
         </div>
 
@@ -397,118 +410,118 @@ export default function LiveDetectionPage() {
           {/* Main Visualizer */}
           <div className="lg:col-span-8 space-y-6">
             <Card className="bg-black/40 border-white/5 rounded-3xl overflow-hidden relative group">
-               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent z-10" />
-               
-               <div className="relative aspect-video bg-muted/20 flex items-center justify-center">
-                  {/* Camera Scanner Effect */}
-                  {webcamActive && (
-                    <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-                       <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-primary m-6 rounded-tl-2xl opacity-40 shadow-[-5px_-5px_15px_rgba(191,255,0,0.2)]" />
-                       <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-primary m-6 rounded-tr-2xl opacity-40 shadow-[5px_-5px_15px_rgba(191,255,0,0.2)]" />
-                       <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-primary m-6 rounded-bl-2xl opacity-40 shadow-[-5px_5px_15px_rgba(191,255,0,0.2)]" />
-                       <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-primary m-6 rounded-br-2xl opacity-40 shadow-[5px_5px_15px_rgba(191,255,0,0.2)]" />
-                       <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-primary/20 animate-pulse" />
-                       <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-primary/20 animate-pulse" />
-                    </div>
-                  )}
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent z-10" />
 
-                  <video
-                    ref={videoRef}
-                    className={cn('w-full h-full object-cover', !webcamActive && 'hidden')}
-                    muted
-                    playsInline
-                  />
-
-                  {selectedImage && !webcamActive && (
-                    <img
-                      src={selectedImage}
-                      alt="Input region"
-                      className="w-full h-full object-contain"
-                    />
-                  )}
-
-                  {!webcamActive && !selectedImage && (
-                    <div className="flex flex-col items-center gap-6 p-12 text-center">
-                       <div className="h-24 w-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-pulse">
-                          <Eye className="h-12 w-12 text-primary/30" />
-                       </div>
-                       <div className="space-y-2">
-                          <h3 className="text-2xl font-bold tracking-tight">Awaiting Vision Input</h3>
-                          <p className="text-muted-foreground text-sm max-w-sm mx-auto font-medium">Link a live feed or upload high-resolution field data for real-time diagnostic analysis.</p>
-                       </div>
-                       <Button onClick={startWebcam} className="h-12 rounded-xl bg-primary text-black font-bold px-8 shadow-lg shadow-primary/20 border-0 hover:scale-105 transition-all text-sm uppercase tracking-widest">
-                          Initialize Live Feed
-                       </Button>
-                    </div>
-                  )}
-
-                  {detecting && (
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-6">
-                       <div className="relative">
-                          <div className="h-20 w-20 rounded-full border-2 border-primary/20 flex items-center justify-center">
-                             <RefreshCw className="h-8 w-8 text-primary animate-spin" />
-                          </div>
-                          <div className="absolute inset-x-[-20px] top-full mt-4 text-center">
-                             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">Scanning Neural Mesh</p>
-                          </div>
-                       </div>
-                    </div>
-                  )}
-               </div>
-
-               <CardContent className="p-6 bg-white/5 border-t border-white/5">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-                     <div className="flex items-center gap-6">
-                        <Button
-                          variant="outline"
-                          className="h-12 border-white/10 bg-white/5 rounded-xl px-6 font-bold hover:bg-white/10 group/up"
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          <Upload className="h-4 w-4 mr-2 text-primary group-hover/up:scale-125 transition-all" />
-                          Upload Frame
-                        </Button>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handleFileChange}
-                        />
-                        {webcamActive && (
-                          <Button
-                            className="h-12 bg-white/10 hover:bg-white/20 border-white/10 rounded-xl px-6 font-bold text-white uppercase tracking-widest text-xs"
-                            onClick={stopWebcam}
-                          >
-                             Terminate Feed
-                          </Button>
-                        )}
-                     </div>
-
-                     <div className="flex gap-2">
-                        {webcamActive && (
-                          <Button
-                            size="lg"
-                            className={cn(
-                              "h-14 rounded-2xl font-black px-10 transition-all border-0 uppercase tracking-widest",
-                              liveLoopActive ? "bg-red-600 text-white shadow-lg shadow-red-600/30" : "bg-primary text-black shadow-lg shadow-primary/30"
-                            )}
-                            onClick={liveLoopActive ? stopLiveDetection : startLiveDetection}
-                          >
-                            {liveLoopActive ? "DISENGAGE LIVE" : "ENGAGE LIVE SCAN"}
-                          </Button>
-                        )}
-                        {selectedImage && !detecting && (
-                           <Button
-                             size="lg"
-                             className="h-14 rounded-2xl bg-primary text-black font-black px-10 shadow-lg shadow-primary/30 border-0 hover:scale-105 transition-all uppercase tracking-widest"
-                             onClick={handleDetectUpload}
-                           >
-                             START ANALYSIS
-                           </Button>
-                        )}
-                     </div>
+              <div className="relative aspect-video bg-muted/20 flex items-center justify-center">
+                {/* Camera Scanner Effect */}
+                {webcamActive && (
+                  <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
+                    <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-primary m-6 rounded-tl-2xl opacity-40 shadow-[-5px_-5px_15px_rgba(191,255,0,0.2)]" />
+                    <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-primary m-6 rounded-tr-2xl opacity-40 shadow-[5px_-5px_15px_rgba(191,255,0,0.2)]" />
+                    <div className="absolute bottom-0 left-0 w-24 h-24 border-b-2 border-l-2 border-primary m-6 rounded-bl-2xl opacity-40 shadow-[-5px_5px_15px_rgba(191,255,0,0.2)]" />
+                    <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-primary m-6 rounded-br-2xl opacity-40 shadow-[5px_5px_15px_rgba(191,255,0,0.2)]" />
+                    <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-primary/20 animate-pulse" />
+                    <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-primary/20 animate-pulse" />
                   </div>
-               </CardContent>
+                )}
+
+                <video
+                  ref={videoRef}
+                  className={cn('w-full h-full object-cover', !webcamActive && 'hidden')}
+                  muted
+                  playsInline
+                />
+
+                {selectedImage && !webcamActive && (
+                  <img
+                    src={selectedImage}
+                    alt="Input region"
+                    className="w-full h-full object-contain"
+                  />
+                )}
+
+                {!webcamActive && !selectedImage && (
+                  <div className="flex flex-col items-center gap-6 p-12 text-center">
+                    <div className="h-24 w-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-pulse">
+                      <Eye className="h-12 w-12 text-primary/30" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold tracking-tight">Awaiting Vision Input</h3>
+                      <p className="text-muted-foreground text-sm max-w-sm mx-auto font-medium">Link a live feed or upload high-resolution field data for real-time diagnostic analysis.</p>
+                    </div>
+                    <Button onClick={startWebcam} className="h-12 rounded-xl bg-primary text-black font-bold px-8 shadow-lg shadow-primary/20 border-0 hover:scale-105 transition-all text-sm uppercase tracking-widest">
+                      Initialize Live Feed
+                    </Button>
+                  </div>
+                )}
+
+                {detecting && (
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-20 flex flex-col items-center justify-center gap-6">
+                    <div className="relative">
+                      <div className="h-20 w-20 rounded-full border-2 border-primary/20 flex items-center justify-center">
+                        <RefreshCw className="h-8 w-8 text-primary animate-spin" />
+                      </div>
+                      <div className="absolute inset-x-[-20px] top-full mt-4 text-center">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">Scanning Neural Mesh</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <CardContent className="p-6 bg-white/5 border-t border-white/5">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center gap-6">
+                    <Button
+                      variant="outline"
+                      className="h-12 border-white/10 bg-white/5 rounded-xl px-6 font-bold hover:bg-white/10 group/up"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Upload className="h-4 w-4 mr-2 text-primary group-hover/up:scale-125 transition-all" />
+                      Upload Frame
+                    </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                    {webcamActive && (
+                      <Button
+                        className="h-12 bg-white/10 hover:bg-white/20 border-white/10 rounded-xl px-6 font-bold text-white uppercase tracking-widest text-xs"
+                        onClick={stopWebcam}
+                      >
+                        Terminate Feed
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    {webcamActive && (
+                      <Button
+                        size="lg"
+                        className={cn(
+                          "h-14 rounded-2xl font-black px-10 transition-all border-0 uppercase tracking-widest",
+                          liveLoopActive ? "bg-red-600 text-white shadow-lg shadow-red-600/30" : "bg-primary text-black shadow-lg shadow-primary/30"
+                        )}
+                        onClick={liveLoopActive ? stopLiveDetection : startLiveDetection}
+                      >
+                        {liveLoopActive ? "DISENGAGE LIVE" : "ENGAGE LIVE SCAN"}
+                      </Button>
+                    )}
+                    {selectedImage && !detecting && (
+                      <Button
+                        size="lg"
+                        className="h-14 rounded-2xl bg-primary text-black font-black px-10 shadow-lg shadow-primary/30 border-0 hover:scale-105 transition-all uppercase tracking-widest"
+                        onClick={handleDetectUpload}
+                      >
+                        START ANALYSIS
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
             </Card>
 
             {/* Results Display */}
@@ -519,7 +532,7 @@ export default function LiveDetectionPage() {
                   const firstResult = result.leaves[0]
                   const allLeaves = result.leaves.every(r => r.is_leaf)
                   const hasNotLeaf = result.leaves.some(r => r.status === 'NOT_LEAF')
-                  const hasNoCrop  = result.leaves.some(r => r.status === 'NO_CROP')
+                  const hasNoCrop = result.leaves.some(r => r.status === 'NO_CROP')
                   return (
                     <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
                       <p className="text-[10px] font-black tracking-[0.25em] uppercase text-muted-foreground mb-4">Detection Pipeline</p>
@@ -530,8 +543,8 @@ export default function LiveDetectionPage() {
                           (hasNoCrop)
                             ? "bg-muted/30 border-muted/30 text-muted-foreground"
                             : hasNotLeaf
-                            ? "bg-violet-500/15 border-violet-500/30 text-violet-400"
-                            : "bg-primary/15 border-primary/30 text-primary"
+                              ? "bg-violet-500/15 border-violet-500/30 text-violet-400"
+                              : "bg-primary/15 border-primary/30 text-primary"
                         )}>
                           <Leaf className="h-3.5 w-3.5" />
                           <span>Stage 1: {hasNoCrop ? 'No Crop' : hasNotLeaf ? 'Not a Leaf' : 'Leaf ✓'}</span>
@@ -546,8 +559,8 @@ export default function LiveDetectionPage() {
                           !allLeaves
                             ? "bg-muted/20 border-muted/20 text-muted-foreground/40"
                             : firstResult.status === 'DISEASED'
-                            ? "bg-red-500/15 border-red-500/30 text-red-400"
-                            : "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
+                              ? "bg-red-500/15 border-red-500/30 text-red-400"
+                              : "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
                         )}>
                           <Microscope className="h-3.5 w-3.5" />
                           <span>Stage 2: {!allLeaves ? 'Skipped' : 'Disease Check ✓'}</span>
@@ -562,17 +575,17 @@ export default function LiveDetectionPage() {
                     const cfg = statusConfig[crop.status] ?? statusConfig.NO_CROP
                     const StatusIcon = cfg.icon
                     const isDiseased = crop.status === 'DISEASED'
-                    const isNotLeaf  = crop.status === 'NOT_LEAF'
-                    const isNoCrop   = crop.status === 'NO_CROP'
+                    const isNotLeaf = crop.status === 'NOT_LEAF'
+                    const isNoCrop = crop.status === 'NO_CROP'
 
                     return (
                       <Card key={i} className="bg-white/5 border-white/5 rounded-3xl overflow-hidden backdrop-blur-md relative group/res hover:scale-[1.02] transition-all">
                         <div className={cn(
                           "absolute inset-y-0 left-0 w-1",
                           isDiseased ? "bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]"
-                          : isNotLeaf ? "bg-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.5)]"
-                          : isNoCrop  ? "bg-muted"
-                          : "bg-primary shadow-[0_0_15px_rgba(191,255,0,0.5)]"
+                            : isNotLeaf ? "bg-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+                              : isNoCrop ? "bg-muted"
+                                : "bg-primary shadow-[0_0_15px_rgba(191,255,0,0.5)]"
                         )} />
                         <CardContent className="p-6 space-y-4">
                           {/* Stage badge */}
@@ -657,29 +670,29 @@ export default function LiveDetectionPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {boundaryResult.plots?.slice(0, 4).map((plot, i) => (
                   <Card key={i} className="bg-white/5 border-white/5 rounded-3xl overflow-hidden backdrop-blur-md relative group/res hover:scale-[1.02] transition-all">
-                     <div className="absolute inset-y-0 left-0 w-1 bg-primary shadow-[0_0_15px_rgba(191,255,0,0.5)]" />
-                     <CardContent className="p-6 space-y-4">
-                        <div className="flex items-center justify-between">
-                           <div className="flex items-center gap-3">
-                              <div className="rounded-xl p-2 bg-white/5 border border-white/10">
-                                 <Layers className="h-5 w-5 text-primary" />
-                              </div>
-                              <div>
-                                 <Badge className="text-[10px] uppercase font-black tracking-widest px-2 py-0 h-5 mt-1 border-0 bg-primary text-black">
-                                    FIELD PLOT #{plot.plot_id}
-                                 </Badge>
-                              </div>
-                           </div>
-                           <div className="text-right">
-                              <span className="text-xl font-black tabular-nums">{Math.round(plot.area_sq_meters)}</span>
-                              <p className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase">SQ. METERS</p>
-                           </div>
+                    <div className="absolute inset-y-0 left-0 w-1 bg-primary shadow-[0_0_15px_rgba(191,255,0,0.5)]" />
+                    <CardContent className="p-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="rounded-xl p-2 bg-white/5 border border-white/10">
+                            <Layers className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <Badge className="text-[10px] uppercase font-black tracking-widest px-2 py-0 h-5 mt-1 border-0 bg-primary text-black">
+                              FIELD PLOT #{plot.plot_id}
+                            </Badge>
+                          </div>
                         </div>
-                        <div className="p-3 bg-white/5 border border-white/10 rounded-xl">
-                           <p className="text-[10px] font-black tracking-widest uppercase text-muted-foreground mb-1">Position Coordinates</p>
-                           <p className="text-xs font-bold text-foreground">Rel: {plot.center_x}, {plot.center_y}</p>
+                        <div className="text-right">
+                          <span className="text-xl font-black tabular-nums">{Math.round(plot.area_sq_meters)}</span>
+                          <p className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase">SQ. METERS</p>
                         </div>
-                     </CardContent>
+                      </div>
+                      <div className="p-3 bg-white/5 border border-white/10 rounded-xl">
+                        <p className="text-[10px] font-black tracking-widest uppercase text-muted-foreground mb-1">Position Coordinates</p>
+                        <p className="text-xs font-bold text-foreground">Rel: {plot.center_x}, {plot.center_y}</p>
+                      </div>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
@@ -688,43 +701,43 @@ export default function LiveDetectionPage() {
 
           {/* Sidebar Telemetry */}
           <div className="lg:col-span-4 space-y-8">
-             {/* Engine Telemetry */}
-             <Card className="bg-white/5 border-white/5 rounded-[2.5rem] p-8 overflow-hidden relative">
-                <div className="absolute top-0 right-0 p-8 opacity-10">
-                   <Activity className="h-24 w-24" />
-                </div>
-                <h3 className="text-sm font-black tracking-[0.2em] uppercase text-muted-foreground mb-8">Uplink Telemetry</h3>
-                <div className="space-y-8">
-                   {[
-                      { label: "Neural Load", value: detecting ? "78%" : "12%", icon: Zap, color: "text-amber-500" },
-                      { label: "Diagnostic Mode", value: boundaryMode ? "BOUNDARY-SCAN" : "CROP-DISEASE", icon: Microscope, color: "text-primary" },
-                      { label: "Frame Buffer", value: "HD-PRO 60fps", icon: Camera, color: "text-blue-500" },
-                      { label: "Signal Latency", value: result || boundaryResult ? (result?.processing_time_ms || boundaryResult?.processing_time_ms) + "ms" : "4ms", icon: Wifi, color: "text-blue-500" },
-                   ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-4">
-                         <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center">
-                            <item.icon className={cn("h-4 w-4", item.color)} />
-                         </div>
-                         <div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{item.label}</p>
-                            <p className="text-lg font-black tracking-tight">{item.value}</p>
-                         </div>
-                      </div>
-                   ))}
-                </div>
-             </Card>
+            {/* Engine Telemetry */}
+            <Card className="bg-white/5 border-white/5 rounded-[2.5rem] p-8 overflow-hidden relative">
+              <div className="absolute top-0 right-0 p-8 opacity-10">
+                <Activity className="h-24 w-24" />
+              </div>
+              <h3 className="text-sm font-black tracking-[0.2em] uppercase text-muted-foreground mb-8">Uplink Telemetry</h3>
+              <div className="space-y-8">
+                {[
+                  { label: "Neural Load", value: detecting ? "78%" : "12%", icon: Zap, color: "text-amber-500" },
+                  { label: "Diagnostic Mode", value: boundaryMode ? "BOUNDARY-SCAN" : "CROP-DISEASE", icon: Microscope, color: "text-primary" },
+                  { label: "Frame Buffer", value: "HD-PRO 60fps", icon: Camera, color: "text-blue-500" },
+                  { label: "Signal Latency", value: result || boundaryResult ? (result?.processing_time_ms || boundaryResult?.processing_time_ms) + "ms" : "4ms", icon: Wifi, color: "text-blue-500" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center">
+                      <item.icon className={cn("h-4 w-4", item.color)} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{item.label}</p>
+                      <p className="text-lg font-black tracking-tight">{item.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
 
-             {/* Legend */}
-             <Card className="bg-white/5 border-white/5 rounded-[2.5rem] p-8">
-                <h3 className="text-sm font-black tracking-[0.2em] uppercase text-muted-foreground mb-6">Diagnostic Range</h3>
-                <div className="space-y-3">
-                   {['🌿 Leaves', '🌱 Stems', '🍅 Fruits', '🥔 Roots', '🌾 Whole Plant', '🪨 Soil Patches'].map((t) => (
-                      <div key={t} className="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-2xl border border-white/5 text-xs font-bold transition-all hover:bg-white/10 hover:border-primary/20">
-                         {t}
-                      </div>
-                   ))}
-                </div>
-             </Card>
+            {/* Legend */}
+            <Card className="bg-white/5 border-white/5 rounded-[2.5rem] p-8">
+              <h3 className="text-sm font-black tracking-[0.2em] uppercase text-muted-foreground mb-6">Diagnostic Range</h3>
+              <div className="space-y-3">
+                {['🌿 Leaves', '🌱 Stems', '🍅 Fruits', '🥔 Roots', '🌾 Whole Plant', '🪨 Soil Patches'].map((t) => (
+                  <div key={t} className="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-2xl border border-white/5 text-xs font-bold transition-all hover:bg-white/10 hover:border-primary/20">
+                    {t}
+                  </div>
+                ))}
+              </div>
+            </Card>
           </div>
         </div>
       </div>
